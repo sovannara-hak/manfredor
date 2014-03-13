@@ -34,3 +34,5 @@ list_obj = [a0, a1, a2, a3, a4]
 for obj in list_obj:
     print obj.computeScore()
 
+print "Cluster:"
+print manfredor.manfredor(list_obj, 3)
