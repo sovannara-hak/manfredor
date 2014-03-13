@@ -13,12 +13,12 @@ Dependencies:
 How to:
 =======
 
-  git clone --recursive https://github.com/sovannara-hak/manfredor.git
-  cd manfredor
-  python setup.py install --prefix=/valid/python/path
-  
+    git clone --recursive https://github.com/sovannara-hak/manfredor.git
+    cd manfredor
+    python setup.py install --prefix=/valid/python/path
+	
 Test:
 =====
 
-  python test/test.py
+    python test/test.py
 
