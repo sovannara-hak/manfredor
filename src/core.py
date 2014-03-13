@@ -1,4 +1,6 @@
-import scipy.cluster.vq
+import scipy.cluster.vq as scv
+import numpy as np
+import operator
 
 class ManfObject(object):
     def __init__(self):
@@ -18,17 +20,23 @@ def manfredor(list_obj, num_cluster=10):
     for obj in list_obj:
         score_list.append(obj.computeScore())
 
-    whitened = scipy.cluster.vq.whiten(score_list) 
+    whitened = scv.whiten(score_list) 
 
-    centroids, _ = scipy.cluster.vq.kmeans(whitened, num_cluster)
-    idx,_ = scipy.cluster.vq.vq(whitened, centroids)
+    centroids, _ = scv.kmeans(whitened, num_cluster)
+    idx,_ = scv.vq(whitened, centroids)
+
+    rank = np.argsort(centroids)
+
+    rank_mapping = dict(zip([c for c in centroids], rank))
 
     clustered = {}
     i = 0
     for obj in list_obj:
-        clustered[obj.url] = idx[i]
+        clustered[obj.url] = rank_mapping[centroids[idx[i]]]
         i += 1
 
-    return clustered
+    sorted_cluster = sorted(clustered.iteritems(), key=operator.itemgetter(1))
+
+    return sorted_cluster
 
 

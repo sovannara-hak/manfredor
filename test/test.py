@@ -32,7 +32,9 @@ a4.rules = rules
 list_obj = [a0, a1, a2, a3, a4]
 
 for obj in list_obj:
-    print obj.computeScore()
+  print "URL: "+obj.url, " Score: ", obj.computeScore()
 
-print "Cluster:"
+print ""
+print "Classification: "
 print manfredor.manfredor(list_obj, 3)
+
