@@ -12,7 +12,10 @@ class Rules(object):
                 self.rules[tok[0]] = float(tok[1])
 
     def dumpRules(self, rules_file_path):
-        pass
+        f = open(rules_file_path, 'w')
+        for key in self.rules:
+            linestr = key+" = "+str(self.rules[key])
+            f.write(linestr+"\n")
 
     def addRule(self, tag, score):
         if tag in self.rules: 
