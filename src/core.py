@@ -1,18 +1,21 @@
 import scipy.cluster.vq as scv
 import numpy as np
 import operator
+from rules import Rules
 
 class ManfObject(object):
-    def __init__(self):
+    def __init__(self, rules):
         self.url = ""
         self.tags = []
-        self.rules = {}
+        self.rules = rules
 
     def computeScore(self):
         score = 0
-        if len(self.rules) != 0:
+        if self.rules != {}:
             for t in self.tags:
-                score += self.rules[t]
+                score += self.rules.rules[t]
+        else:
+            print "Unrecognized tag, score: 0"
         return score
 
 def manfredor(list_obj, num_cluster=10):
@@ -38,5 +41,4 @@ def manfredor(list_obj, num_cluster=10):
     sorted_cluster = sorted(clustered.iteritems(), key=operator.itemgetter(1))
 
     return sorted_cluster
-
 

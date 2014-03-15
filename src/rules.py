@@ -5,7 +5,11 @@ class Rules(object):
         self.path = rules_file_path
 
     def loadRules(self, rules_file_path):
-        pass
+        f = open(rules_file_path, 'r')
+        for linestr in f:
+            tok = linestr.split(" = ")
+            if len(tok) == 2:
+                self.rules[tok[0]] = float(tok[1])
 
     def dumpRules(self, rules_file_path):
         pass
