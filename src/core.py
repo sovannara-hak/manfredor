@@ -23,19 +23,29 @@ def manfredor(list_obj, num_cluster=10):
     for obj in list_obj:
         score_list.append(obj.computeScore())
 
+    #Normalize observations
     whitened = scv.whiten(score_list) 
 
+    #Compute Kmeans on the set of observations
+    #centroids contains the center of each cluster
     centroids, _ = scv.kmeans(whitened, num_cluster)
+
+    #Assign each sample to a cluster
     idx,_ = scv.vq(whitened, centroids)
 
+    #Get index that will sort centroids
     rank = np.argsort(centroids)
 
+    #Map a centroid to a rank
     rank_mapping = dict(zip([c for c in centroids], rank))
 
     clustered = {}
     i = 0
     for obj in list_obj:
-        clustered[obj.url] = rank_mapping[centroids[idx[i]]]
+        cluster_of_obs = idx[i]
+        centroid = centroids[cluster_of_obs]
+        #map url to rank
+        clustered[obj.url] = rank_mapping[centroid]
         i += 1
 
     sorted_cluster = sorted(clustered.iteritems(), key=operator.itemgetter(1))
