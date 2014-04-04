@@ -4,24 +4,23 @@ import operator
 from rules import Rules
 
 class ManfObject(object):
-    def __init__(self, rules):
+    def __init__(self):
         self.url = ""
         self.tags = []
-        self.rules = rules
 
-    def computeScore(self):
+    def computeScore(self, rules):
         score = 0
-        if self.rules != {}:
+        if rules != {}:
             for t in self.tags:
-                score += self.rules.rules[t]
+                score += rules.rules[t]
         else:
             print "Unrecognized tag, score: 0"
         return score
 
-def manfredor(list_obj, num_cluster=10):
+def manfredor(list_obj, rules, num_cluster=10):
     score_list = []
     for obj in list_obj:
-        score_list.append(obj.computeScore())
+        score_list.append(obj.computeScore(rules))
 
     #Normalize observations
     whitened = scv.whiten(score_list) 
