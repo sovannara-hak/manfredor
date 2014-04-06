@@ -4,9 +4,9 @@ import operator
 from rules import Rules
 
 class ManfObject(object):
-    def __init__(self):
-        self.url = ""
-        self.tags = []
+    def __init__(self, url="", tags=[]):
+        self.url = url
+        self.tags = tags
 
     def computeScore(self, rules):
         score = 0
@@ -26,6 +26,10 @@ class Manfredor(object):
 
     def loadRules(self, rules_file_path):
         self.rules.loadRules(rules_file_path)
+
+    def printScore(self):
+        for obj in self.list_obj:
+          print "URL: "+obj.url, " Score: ", obj.computeScore(self.rules)
 
     def whitened(self):
         score_list = []
