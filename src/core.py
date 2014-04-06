@@ -17,37 +17,45 @@ class ManfObject(object):
             print "Unrecognized tag, score: 0"
         return score
 
-def manfredor(list_obj, rules, num_cluster=10):
-    score_list = []
-    for obj in list_obj:
-        score_list.append(obj.computeScore(rules))
+class Manfredor(object):
+    def __init__(self):
+        self.rules = Rules()
+        self.centroids = None
+        self.list_obj = None
+        self.clustered_obj = None
 
-    #Normalize observations
-    whitened = scv.whiten(score_list) 
+    def loadRules(self, rules_file_path):
+        self.rules.loadRules(rules_file_path)
 
-    #Compute Kmeans on the set of observations
-    #centroids contains the center of each cluster
-    centroids, _ = scv.kmeans(whitened, num_cluster)
+    def cluster_init(self, num_cluster=10):
+        score_list = []
+        for obj in self.list_obj:
+            score_list.append(obj.computeScore(self.rules))
 
-    #Assign each sample to a cluster
-    idx,_ = scv.vq(whitened, centroids)
+        #Normalize observations
+        whitened = scv.whiten(score_list) 
 
-    #Get index that will sort centroids
-    rank = np.argsort(centroids)
+        #Compute Kmeans on the set of observations
+        #centroids contains the center of each cluster
+        self.centroids, _ = scv.kmeans(whitened, num_cluster)
 
-    #Map a centroid to a rank
-    rank_mapping = dict(zip([c for c in centroids], rank))
+        #Assign each sample to a cluster
+        idx,_ = scv.vq(whitened, self.centroids)
 
-    clustered = {}
-    i = 0
-    for obj in list_obj:
-        cluster_of_obs = idx[i]
-        centroid = centroids[cluster_of_obs]
-        #map url to rank
-        clustered[obj.url] = rank_mapping[centroid]
-        i += 1
+        #Get index that will sort centroids
+        rank = np.argsort(self.centroids)
 
-    sorted_cluster = sorted(clustered.iteritems(), key=operator.itemgetter(1))
+        #Map a centroid to a rank
+        rank_mapping = dict(zip([c for c in self.centroids], rank))
 
-    return sorted_cluster
+        clustered = {}
+        i = 0
+        for obj in self.list_obj:
+            cluster_of_obs = idx[i]
+            centroid = self.centroids[cluster_of_obs]
+            #map url to rank
+            clustered[obj.url] = rank_mapping[centroid]
+            i += 1
+
+        self.clustered_obj = sorted(clustered.iteritems(), key=operator.itemgetter(1))
 

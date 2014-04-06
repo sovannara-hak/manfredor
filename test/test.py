@@ -1,8 +1,8 @@
 import manfredor
 import IPython
 
-rules = manfredor.Rules()
-rules.loadRules("../src/data/rules.txt")
+manf = manfredor.Manfredor()
+manf.loadRules("../src/data/rules.txt")
 
 a0 = manfredor.ManfObject()
 a0.url = "bla0"
@@ -25,12 +25,13 @@ a4.url = "bla4"
 a4.tags = ["t5", "t4"]
 
 list_obj = [a0, a1, a2, a3, a4]
+manf.list_obj = list_obj
 
 for obj in list_obj:
-  print "URL: "+obj.url, " Score: ", obj.computeScore(rules)
+  print "URL: "+obj.url, " Score: ", obj.computeScore(manf.rules)
 
 print ""
 print "Classification: "
-print manfredor.manfredor(list_obj, rules, 3)
-
+manf.cluster_init(3)
+print manf.clustered_obj
 IPython.embed()
