@@ -27,21 +27,23 @@ class Manfredor(object):
     def loadRules(self, rules_file_path):
         self.rules.loadRules(rules_file_path)
 
-    def cluster_init(self, num_cluster=10):
+    def whitened(self):
         score_list = []
         for obj in self.list_obj:
             score_list.append(obj.computeScore(self.rules))
 
         #Normalize observations
         whitened = scv.whiten(score_list) 
+        return whitened
 
-        #Compute Kmeans on the set of observations
-        #centroids contains the center of each cluster
-        self.centroids, _ = scv.kmeans(whitened, num_cluster)
-
-        #Assign each sample to a cluster
+    def cluster(self):
+        whitened = self.whitened()
+        self.centroids, _ = scv.kmeans(whitened, self.centroids)
         idx,_ = scv.vq(whitened, self.centroids)
 
+        self.sortCluster(idx)
+
+    def sortCluster(self, idx):
         #Get index that will sort centroids
         rank = np.argsort(self.centroids)
 
@@ -58,4 +60,17 @@ class Manfredor(object):
             i += 1
 
         self.clustered_obj = sorted(clustered.iteritems(), key=operator.itemgetter(1))
+
+    def cluster_init(self, num_cluster=10):
+
+        whitened = self.whitened()
+
+        #Compute Kmeans on the set of observations
+        #centroids contains the center of each cluster
+        self.centroids, _ = scv.kmeans(whitened, num_cluster)
+
+        #Assign each sample to a cluster
+        idx,_ = scv.vq(whitened, self.centroids)
+
+        self.sortCluster(idx)
 
